@@ -3,10 +3,11 @@ import { drizzle } from "drizzle-orm/planetscale-serverless";
 import { connect } from "@planetscale/database";
 import { int, float, mysqlTable, varchar, date, boolean } from "drizzle-orm/mysql-core";
 
+
 const env = {
-  host: 'mysql://y285hw012u1ao3x9u0ob:pscale_pw_ycxTw0nO9UqbhBA98tVshIvky5hCsPEp9wkJaxESFjc@aws.connect.psdb.cloud/dotstudio?ssl={"rejectUnauthorized":true}',
-  username: 'y285hw012u1ao3x9u0ob',
-  password: 'pscale_pw_ycxTw0nO9UqbhBA98tVshIvky5hCsPEp9wkJaxESFjc'
+  host: 'mysql://f2prpf73d47od773jug8:pscale_pw_sUgOqTUcnW39VbYz9p5qOsj7cvMarKoB3VVlDiwJBqT@aws.connect.psdb.cloud/dotstudio?ssl={"rejectUnauthorized":true}',
+  username: 'f2prpf73d47od773jug8',
+  password: 'pscale_pw_sUgOqTUcnW39VbYz9p5qOsj7cvMarKoB3VVlDiwJBqT'
 }
 
 

@@ -953,6 +953,7 @@ async function fetchWithTimeout(resource, options = {}) {
   return response;
 }
 
+const schoolApIBase = 'http://localhost:3000/school'
 export async function GET() {
   // init time
   const startTime = new Date().getTime()
@@ -965,7 +966,9 @@ export async function GET() {
       console.log('searching in db...', {
         affiliationCode: parseInt(affilatedSchool.id)
       })
-      const school = await db.select().from(schools).where(eq(schools.affiliationCode, parseInt(affilatedSchool.id)))
+      const schoolRes = await fetch(schoolApIBase + '?affiliationCode=' + parseInt(affilatedSchool.id))
+      const school = await schoolRes.text()
+      console.log('school --> ', school)
       if (school.length === 0) {
         console.log('not found in db, getting from cbse...')
         // const affilatedSchoolId = '830567'
@@ -1033,7 +1036,14 @@ export async function GET() {
               uniqueSchoolKeys.forEach(key => {
                 uniqueSchool[key] = school[key]
               })
-              await db.insert(schools).values(uniqueSchool)
+              await fetch(schoolApIBase, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(uniqueSchool)
+              })
+              // await db.insert(schools).values(uniqueSchool)
               console.log('done')
               log = log + 'done' + '\n'
               // console.log('hello --> ', school)
@@ -1051,8 +1061,8 @@ export async function GET() {
         console.log('skipping...')
       }
 
-      console.log('Pausing for 3 seconds...')
-      await new Promise(resolve => setTimeout(resolve, 3000))
+      console.log('Pausing for 4 seconds...')
+      await new Promise(resolve => setTimeout(resolve, 4000))
 
       let timeTaken = new Date().getTime() - startTime
       let currentTimeTaken = new Date().getTime() - currentStartTime
