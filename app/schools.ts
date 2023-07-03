@@ -8159,11 +8159,11 @@ const getCategory = (school: { fees: number }) => {
   return 'Z'
 }
 
-function degreesToRadians(degrees) {
+function degreesToRadians(degrees: number) {
   return degrees * Math.PI / 180;
 }
 
-function distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
+function distanceInKmBetweenEarthCoordinates(lat1: number, lon1: number, lat2:number, lon2: number) {
   const earthRadiusKm = 6371;
   const dLat = degreesToRadians(lat2-lat1);
   const dLon = degreesToRadians(lon2-lon1);

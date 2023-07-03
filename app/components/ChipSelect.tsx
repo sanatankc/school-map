@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { NextPage } from "next";
 import { Theme, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import OutlinedInput from '@mui/material/OutlinedInput';
@@ -35,7 +36,12 @@ function getStyles(name: string, category: readonly string[], theme: Theme) {
   };
 }
 
-export default function MultipleSelectChip({ category, setCategories }) {
+interface Props {
+  category: string[],
+  setCategories: (newValue: string[]) => void,
+}
+
+const MultipleSelectChip: NextPage<Props> = ({ category, setCategories }) => {
   const theme = useTheme();
 
   const handleChange = (event: SelectChangeEvent<typeof category>) => {
@@ -62,7 +68,7 @@ export default function MultipleSelectChip({ category, setCategories }) {
           input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.map((value) => (
+              {selected.map((value: string) => (
                 <Chip key={value} label={value} />
               ))}
             </Box>
@@ -83,3 +89,4 @@ export default function MultipleSelectChip({ category, setCategories }) {
     </div>
   );
 }
+export default MultipleSelectChip;

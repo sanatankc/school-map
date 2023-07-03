@@ -1,4 +1,4 @@
-const varchar = (name: string, options: { length: number }) =>  (val) => {
+const varchar = (name: string, options: { length: number }) =>  (val: string) => {
   if (typeof val === 'string') {
     if (val.length > options.length) {
       console.warn(`Truncating ${name} to ${options.length} characters`)
@@ -9,7 +9,7 @@ const varchar = (name: string, options: { length: number }) =>  (val) => {
   return String(val)
 }
 
-const int = (name: string) => (val) => {
+const int = (name: string) => (val: string) => {
   if (typeof val === 'string') {
     val = val.replaceAll(',', '')
     val = val.replaceAll(' ', '')
@@ -22,7 +22,7 @@ const int = (name: string) => (val) => {
   return val
 }
 
-const float = (name: string) => (val) => {
+const float = (name: string) => (val: string) => {
   if (typeof val === 'string') {
     val = val.replaceAll(',', '')
     val = val.replaceAll(' ', '')
@@ -34,7 +34,7 @@ const float = (name: string) => (val) => {
   }
   return val
 }
-const boolean = (name: string) => (val) => {
+const boolean = (name: string) => (val: string) => {
   const truthyString = ['yes', 'true']
   const falseyString = ['yes', 'false']
   if (typeof val === 'boolean') {

@@ -1,5 +1,4 @@
 import { db, schools } from './migrate'
-T
 
 // const csvToSchemaName = 
 const main = async ()  => {

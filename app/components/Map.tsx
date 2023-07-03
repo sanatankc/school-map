@@ -1,3 +1,4 @@
+// @ts-nocheck
 'use client';
 
 import React, { Component, use } from 'react';
@@ -11,7 +12,7 @@ const containerStyle = {
 
 const bangloreCenter = {lat: 12.987246534773332, lng:  77.59929160799365}
 
-const getIcon = (color) => {
+const getIcon = (color: string) => {
   const icon = `<svg height="50" width="50" viewBox="-4 0 36 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="opacity:0.8">
     <g id="Vivid.JS" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="Vivid-Icons" transform="translate(-125.000000, -643.000000)">

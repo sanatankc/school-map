@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import schools, { getSchoolsByRadius } from '../schools'
 import FormControl from '@mui/material/FormControl'
