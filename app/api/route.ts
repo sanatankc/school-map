@@ -961,128 +961,151 @@ export async function GET() {
   const startTime = new Date().getTime()
   let i = 0
   let log = ''
-  // for (const affilatedSchool of affiliationIds) {
-  //   // console.log('hello')
-  //   try {
-  //     let currentStartTime = new Date().getTime()
-  //     console.log('searching in db...', {
-  //       affiliationCode: parseInt(affilatedSchool.id)
-  //     })
-  //     const schoolRes = await fetch(schoolApIBase + '?affiliationCode=' + parseInt(affilatedSchool.id))
-  //     const school = await schoolRes.text()
-  //     console.log('school --> ', school)
-  //     if (school.length === 0) {
-  //       console.log('not found in db, getting from cbse...')
-  //       // const affilatedSchoolId = '830567'
-  //       // console.log('affilatedSchoolId --> ', affilatedSchool.id)
-  //       const res = await fetchWithTimeout(
-  //         "https://saras.cbse.gov.in/maps/finalreportDetail?AffNo=" +  affilatedSchool.id, {
-  //           headers: {
-  //             'User-Agent': [Math.floor(Math.random() * userAgents.length)]
-  //           }
-  //         }
-  //       )
+  // before we scrape I want to priortise certain cities first.
+  const priortisedDistrict = [
+    'BANGALORE URBAN',
+    "MUMBAI"
+  ]
+  const priortisedStates = [
+    'DELHI',
+    'KARNATAKA'
+  ]
 
-  //       console.log('Getting school ', i, ' of ', affiliationIds.length)
-  //       console.log('Affiliation ID --> ', affilatedSchool.id)
-  //       const html = await res.text()
-  //       log = log + 'Getting school ' + i + ' of ' + affiliationIds.length + '\n'
-  //       log = log + 'Affiliation ID --> ' + affilatedSchool.id + '\n'
-  //       const $ = cheerio.load(html)
-  //       // console.log(html)
-  //       // fs.writeFileSync('./test.ht/ml', html)
+  let allSchools = affiliationIds
+  for (let state of [].concat(priortisedStates).reverse()) {
+    let schoolsWithoutState = allSchools.filter(school => school.state !== state)
+    let schoolsWithState = allSchools.filter(school => school.state === state)
+    allSchools = schoolsWithState.concat(schoolsWithoutState)
+  }
+
+  for (let district of [].concat(priortisedDistrict).reverse()) {
+    let schoolsWithoutDistrict = allSchools.filter(school => school.district !== district)
+    let schoolsWithDistrict = allSchools.filter(school => school.district === district)
+    allSchools = schoolsWithDistrict.concat(schoolsWithoutDistrict)
+  }
+  // for (const )
+  for (const affilatedSchool of allSchools) {
+    // console.log('hello')
+    try {
+      let currentStartTime = new Date().getTime()
+      console.log('searching in db...', {
+        affiliationCode: parseInt(affilatedSchool.id)
+      })
+      const schoolRes = await fetch(schoolApIBase + '?affiliationCode=' + parseInt(affilatedSchool.id))
+      const school = await schoolRes.json()
+      console.log('school --> ', school)
+      if (school.length === 0) {
+        console.log('not found in db, getting from cbse...')
+        // const affilatedSchoolId = '830567'
+        // console.log('affilatedSchoolId --> ', affilatedSchool.id)
+        const res = await fetchWithTimeout(
+          "https://saras.cbse.gov.in/maps/finalreportDetail?AffNo=" +  affilatedSchool.id, {
+            headers: {
+              'User-Agent': [Math.floor(Math.random() * userAgents.length)]
+            }
+          }
+        )
+
+        console.log('Getting school ', i, ' of ', affiliationIds.length)
+        console.log('Affiliation ID --> ', affilatedSchool.id)
+        const html = await res.text()
+        log = log + 'Getting school ' + i + ' of ' + affiliationIds.length + '\n'
+        log = log + 'Affiliation ID --> ' + affilatedSchool.id + '\n'
+        const $ = cheerio.load(html)
+        // console.log(html)
+        // fs.writeFileSync('./test.ht/ml', html)
     
     
-  //       const school = {}
-  //       for (const property of Object.keys(scrapePath)) {
-  //         const path = scrapePath[property].path
-  //         const validator = scrapePath[property].type
-  //         const elem = scrapePath[property].elem
-  //         let value = ''
-  //         // console.log('path --> ', property)
+        const school = {}
+        for (const property of Object.keys(scrapePath)) {
+          const path = scrapePath[property].path
+          const validator = scrapePath[property].type
+          const elem = scrapePath[property].elem
+          let value = ''
+          // console.log('path --> ', property)
     
-  //         if (elem === 'checkbox') {
-  //           // console.log('check ---> ', $(path).outer())
-  //           value = !!$(path).attr('checked')
-  //         } else {
-  //           value = $(path).first().text().trim()
-  //           // console.log('value --> ', path, value)
-  //         }
+          if (elem === 'checkbox') {
+            // console.log('check ---> ', $(path).outer())
+            value = !!$(path).attr('checked')
+          } else {
+            value = $(path).first().text().trim()
+            // console.log('value --> ', path, value)
+          }
     
-  //         const sanitisedValue = validator(value)  
-  //         school[property] = sanitisedValue
-  //       }
-  //       if (school.name) {
+          const sanitisedValue = validator(value)  
+          school[property] = sanitisedValue
+        }
+        if (school.name) {
     
-  //         school.affiliationCode = parseInt(affilatedSchool.id)
-  //         school.state = affilatedSchool.state
-  //         school.district = affilatedSchool.district
-  //         school.board = 'CBSE'
-  //         console.log('Getting lat long ...')
-  //         log = log + 'Getting lat long ...' + '\n'
-  //         const { lat, long } = await getLatLong(school.name, school.state, school.district, school.address)
-  //         school.lat = lat
-  //         school.long = long
+          school.affiliationCode = parseInt(affilatedSchool.id)
+          school.state = affilatedSchool.state
+          school.district = affilatedSchool.district
+          school.board = 'CBSE'
+          console.log('Getting lat long ...')
+          log = log + 'Getting lat long ...' + '\n'
+          const { lat, long } = await getLatLong(school.name, school.state, school.district, school.address)
+          school.lat = lat
+          school.long = long
           
-  //             // console.log('lat long --> ', lat, long)
+              // console.log('lat long --> ', lat, long)
           
-  //             console.log('adding to db')
-  //             log = log + 'adding to db' + '\n'
-  //             // console.log(school)
+              console.log('adding to db')
+              log = log + 'adding to db' + '\n'
+              // console.log(school)
           
-  //             // remove any duplicate keys
-  //             const schoolKeys = Object.keys(school)
-  //             const uniqueSchoolKeys = [...new Set(schoolKeys)]
-  //             const uniqueSchool = {}
-  //             uniqueSchoolKeys.forEach(key => {
-  //               uniqueSchool[key] = school[key]
-  //             })
-  //             await fetch(schoolApIBase, {
-  //               method: 'POST',
-  //               headers: {
-  //                 'Content-Type': 'application/json'
-  //               },
-  //               body: JSON.stringify(uniqueSchool)
-  //             })
-  //             // await db.insert(schools).values(uniqueSchool)
-  //             console.log('done')
-  //             log = log + 'done' + '\n'
-  //             // console.log('hello --> ', school)
-  //       } else {
-  //         console.log('Could not find the details...')
-  //         log = log + 'Affiliation Id: ' + affilatedSchool.id + '\n'
-  //         // console.log('school --> ', school)
-  //         const logAppend = fs.createWriteStream('./log.txt', {flags: 'a'})
-  //         logAppend.write(log)
-  //         logAppend.end()
-  //       }
-  //       i++
-  //     } else {
-  //       console.log('Already in db')
-  //       console.log('skipping...')
-  //     }
+              // remove any duplicate keys
+              const schoolKeys = Object.keys(school)
+              const uniqueSchoolKeys = [...new Set(schoolKeys)]
+              const uniqueSchool = {}
+              uniqueSchoolKeys.forEach(key => {
+                uniqueSchool[key] = school[key]
+              })
+              await fetch(schoolApIBase, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(uniqueSchool)
+              })
+              // await db.insert(schools).values(uniqueSchool)
+              console.log('done')
+              log = log + 'done' + '\n'
+              // console.log('hello --> ', school)
+        } else {
+          console.log('Could not find the details...')
+          log = log + 'Affiliation Id: ' + affilatedSchool.id + '\n'
+          // console.log('school --> ', school)
+          const logAppend = fs.createWriteStream('./log.txt', {flags: 'a'})
+          logAppend.write(log)
+          logAppend.end()
+        }
+        i++
+      } else {
+        console.log('Already in db')
+        console.log('skipping...')
+      }
 
-  //     console.log('Pausing for 4 seconds...')
-  //     await new Promise(resolve => setTimeout(resolve, 4000))
+      console.log('Pausing for 4 seconds...')
+      await new Promise(resolve => setTimeout(resolve, 4000))
 
-  //     let timeTaken = new Date().getTime() - startTime
-  //     let currentTimeTaken = new Date().getTime() - currentStartTime
-  //     console.log('Time taken --> ', msToTime(currentTimeTaken))
-  //     console.log('Estimated time remaining --> ', msToTime((timeTaken / i) * (affiliationIds.length - i)))
+      let timeTaken = new Date().getTime() - startTime
+      let currentTimeTaken = new Date().getTime() - currentStartTime
+      console.log('Time taken --> ', msToTime(currentTimeTaken))
+      console.log('Estimated time remaining --> ', msToTime((timeTaken / i) * (affiliationIds.length - i)))
 
-  //     // after every 500 schools, wait for 5 minute
+      // after every 500 schools, wait for 5 minute
 
-  //     if (i % 500 === 0) {
-  //       console.log('Pausing for 5 minutes...')
-  //       await new Promise(resolve => setTimeout(resolve, 300000))
-  //     }
-  //     console.log('-----------------------------------')
-  //     console.log('-----------------------------------')
+      if (i % 500 === 0) {
+        console.log('Pausing for 5 minutes...')
+        await new Promise(resolve => setTimeout(resolve, 300000))
+      }
+      console.log('-----------------------------------')
+      console.log('-----------------------------------')
   
-  //   } catch (e) {
-  //     console.log('Error --> ', e)
-  //   }
-  // }
+    } catch (e) {
+      console.log('Error --> ', e)
+    }
+  }
 
   return NextResponse.json({ success: 'done' })
 }
