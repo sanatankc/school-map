@@ -10,7 +10,7 @@ const LINUX_SSL_CERT_PATH = "/etc/pki/tls/certs/ca-bundle.crt";
 const sslCertPath = process.platform === "darwin" ? MAC_SSL_CERT_PATH : LINUX_SSL_CERT_PATH;
 
 const env = {
-  host: 'mysql://nnbiyo2doqrd7sawy13c:pscale_pw_hBjbRqaZ8Joe27OqSoC0g8td3uIjb0XgGQWgrSbZ7LX@aws.connect.psdb.cloud/dotstudio?ssl={"rejectUnauthorized":false}&sslcert=' + sslCertPath,
+  host: `mysql://${process.env.PLANETSCALE_DB_USERNAME}:${process.env.PLANETSCALE_DB_PASSWORD}@${process.env.PLANETSCALE_DB_HOST}/${process.env.PLANETSCALE_DB}?ssl={"rejectUnauthorized":false}&sslcert=${process.env.PLANETSCALE_SSL_CERT_PATH}`
 }
 
 console.log("Connecting to Planetscale database...", env);
