@@ -4,10 +4,16 @@ import { connect } from "@planetscale/database";
 import { int, float, mysqlTable, varchar, date, boolean } from "drizzle-orm/mysql-core";
 
 
+const MAC_SSL_CERT_PATH = "/etc/ssl/cert.pem";
+const LINUX_SSL_CERT_PATH = "/etc/pki/tls/certs/ca-bundle.crt";
+
+const sslCertPath = process.platform === "darwin" ? MAC_SSL_CERT_PATH : LINUX_SSL_CERT_PATH;
+
 const env = {
-  host: 'mysql://u12x5b4hvb0x0jmlf47v:pscale_pw_zMm2HAT5at5lU2QXmSEOUD2hYz7KN9mPCNi6UxuLrDl@aws.connect.psdb.cloud/dotstudio?sslmode=require&sslaccept=strict&sslcert=/etc/ssl/certs/ca-certificates.crt',
+  host: 'mysql://nnbiyo2doqrd7sawy13c:pscale_pw_hBjbRqaZ8Joe27OqSoC0g8td3uIjb0XgGQWgrSbZ7LX@aws.connect.psdb.cloud/dotstudio?ssl={"rejectUnauthorized":false}&sslcert=' + sslCertPath,
 }
 
+console.log("Connecting to Planetscale database...", env);
 
 export const schools = mysqlTable("schools", {
   name: varchar("name", { length: 200 }),
