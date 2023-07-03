@@ -983,6 +983,8 @@ export async function GET() {
     let schoolsWithDistrict = allSchools.filter(school => school.district === district)
     allSchools = schoolsWithDistrict.concat(schoolsWithoutDistrict)
   }
+  let cursor = allSchools.findIndex(school => school.id === '100043')
+  allSchools = allSchools.slice(cursor)
   // for (const )
   for (const affilatedSchool of allSchools) {
     // console.log('hello')
@@ -1079,14 +1081,13 @@ export async function GET() {
           logAppend.write(log)
           logAppend.end()
         }
+        console.log('Pausing for 4 seconds...')
+        await new Promise(resolve => setTimeout(resolve, 4000))
         i++
       } else {
         console.log('Already in db')
         console.log('skipping...')
       }
-
-      console.log('Pausing for 4 seconds...')
-      await new Promise(resolve => setTimeout(resolve, 4000))
 
       let timeTaken = new Date().getTime() - startTime
       let currentTimeTaken = new Date().getTime() - currentStartTime
