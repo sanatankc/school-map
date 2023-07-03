@@ -5,6 +5,6 @@ export default {
   out: "./generated",
   driver: 'mysql2',
   dbCredentials: {
-    connectionString: 'mysql://f2prpf73d47od773jug8:pscale_pw_sUgOqTUcnW39VbYz9p5qOsj7cvMarKoB3VVlDiwJBqT@aws.connect.psdb.cloud/dotstudio?ssl={"rejectUnauthorized":true}',
+    connectionString: 'mysql://f2coocrsib7rlf7skslm:pscale_pw_fwTfCXcD3MdxM5X50d3mCuRW5ppUTrv6cBr21mNFZMO@aws.connect.psdb.cloud/dotstudio?ssl={"rejectUnauthorized":true}',
   }
 } satisfies Config;

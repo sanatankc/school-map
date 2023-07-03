@@ -5,9 +5,7 @@ import { int, float, mysqlTable, varchar, date, boolean } from "drizzle-orm/mysq
 
 
 const env = {
-  host: 'mysql://f2prpf73d47od773jug8:pscale_pw_sUgOqTUcnW39VbYz9p5qOsj7cvMarKoB3VVlDiwJBqT@aws.connect.psdb.cloud/dotstudio?ssl={"rejectUnauthorized":true}',
-  username: 'f2prpf73d47od773jug8',
-  password: 'pscale_pw_sUgOqTUcnW39VbYz9p5qOsj7cvMarKoB3VVlDiwJBqT'
+  host: 'mysql://f2coocrsib7rlf7skslm:pscale_pw_fwTfCXcD3MdxM5X50d3mCuRW5ppUTrv6cBr21mNFZMO@aws.connect.psdb.cloud/dotstudio?ssl={"rejectUnauthorized":true}'
 }
 
 

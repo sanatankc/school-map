@@ -11,7 +11,7 @@ export async function GET(req: Request) {
 }
 
 export async function POST(req: Request) {
-  const { school } = await req.json()
+  const school = await req.json()
   await db.insert(schools).values(school)
   
   return NextResponse.json({ success: true })

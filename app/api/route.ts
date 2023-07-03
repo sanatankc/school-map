@@ -1007,8 +1007,7 @@ export async function GET() {
             // console.log('value --> ', path, value)
           }
     
-          const sanitisedValue = validator(value)
-    
+          const sanitisedValue = validator(value)  
           school[property] = sanitisedValue
         }
         if (school.name) {
@@ -1055,7 +1054,7 @@ export async function GET() {
           logAppend.write(log)
           logAppend.end()
         }
-    
+        i++
       } else {
         console.log('Already in db')
         console.log('skipping...')
@@ -1068,7 +1067,6 @@ export async function GET() {
       let currentTimeTaken = new Date().getTime() - currentStartTime
       console.log('Time taken --> ', msToTime(currentTimeTaken))
       console.log('Estimated time remaining --> ', msToTime((timeTaken / i) * (affiliationIds.length - i)))
-      i++
 
       // after every 500 schools, wait for 5 minute
 
