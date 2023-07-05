@@ -8,6 +8,7 @@ import * as cheerio from 'cheerio';
 import fetch from 'node-fetch'
 import { NextResponse, } from 'next/server'
 import scrapePath from './scrapePath'
+import schoolsAlreadyInDb from './schoolsAlreadyInDb'
 import affiliationIds from './affiliationIds'
 import { db, schools } from './migrate'
 
@@ -964,11 +965,17 @@ export async function GET() {
   // before we scrape I want to priortise certain cities first.
   const priortisedDistrict = [
     'BANGALORE URBAN',
-    "MUMBAI"
+    "MUMBAI",
+    "CHENNAI",
+    'HYDERABAD'
   ]
   const priortisedStates = [
     'DELHI',
-    'KARNATAKA'
+    'KARNATAKA',
+    'TAMILNADU',
+    'TELANGANA',
+    'KERALA',
+    'ANDHRA PRADESH'
   ]
 
   let allSchools = affiliationIds
@@ -985,6 +992,7 @@ export async function GET() {
   }
   let cursor = allSchools.findIndex(school => school.id === '100043')
   allSchools = allSchools.slice(cursor)
+  allSchools = allSchools.filter(school => schoolsAlreadyInDb.indexOf(Number(school.id)) === -1)
   // for (const )
   for (const affilatedSchool of allSchools) {
     // console.log('hello')
@@ -1008,10 +1016,10 @@ export async function GET() {
           }
         )
 
-        console.log('Getting school ', i, ' of ', affiliationIds.length)
+        console.log('Getting school ', i, ' of ', allSchools.length)
         console.log('Affiliation ID --> ', affilatedSchool.id)
         const html = await res.text()
-        log = log + 'Getting school ' + i + ' of ' + affiliationIds.length + '\n'
+        log = log + 'Getting school ' + i + ' of ' + allSchools.length + '\n'
         log = log + 'Affiliation ID --> ' + affilatedSchool.id + '\n'
         const $ = cheerio.load(html)
         // console.log(html)
@@ -1092,7 +1100,7 @@ export async function GET() {
       let timeTaken = new Date().getTime() - startTime
       let currentTimeTaken = new Date().getTime() - currentStartTime
       console.log('Time taken --> ', msToTime(currentTimeTaken))
-      console.log('Estimated time remaining --> ', msToTime((timeTaken / i) * (affiliationIds.length - i)))
+      console.log('Estimated time remaining --> ', msToTime((timeTaken / i) * (allSchools.length - i)))
 
       // after every 500 schools, wait for 5 minute
 

@@ -23,7 +23,7 @@ export default function Home() {
         setSelectedSchool={setSelected}
         schools={schools}
       />
-      <div className='flex flex-row w-screen overflow-hidden flex-1'>
+      <div className='flex flex-row w-screen overflow-hidden flex-1'> 
         <Toolbar selected={selected} radius={radius} setRadius={setRadius} />
         <SchoolMap selected={selected} setSelected={setSelected} radius={radius} />
       </div>
