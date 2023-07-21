@@ -14,9 +14,15 @@ export const data = [
 export const options = {
   title: "",
   legend: "none",
+  width: 225,
+  height: 225,
+  chartArea: {
+    width: "100%",
+    height: "100%",
+  }
 };
 
-export default function PieChart({ data }) {
+export default function PieChart({ data, colors }) {
   const slice = data.findIndex(row => !!row[2])
   let sliceOptions = {}
   if (slice !== -1) {
@@ -30,9 +36,7 @@ export default function PieChart({ data }) {
     <Chart
       chartType="PieChart"
       data={[["Task", "Hours per Day"], ...data.map(row => [row[0], Number(row[1].replaceAll(',', ''))])]}
-      options={{...options, ...sliceOptions}}
-      width={"100%"}
-      height={"400px"}
+      options={{...options, ...sliceOptions, colors}}
     />
   );
 }

@@ -1056,31 +1056,28 @@ export async function GET() {
           const { lat, long } = await getLatLong(school.name, school.state, school.district, school.address)
           school.lat = lat
           school.long = long
-          
-              // console.log('lat long --> ', lat, long)
-          
-              console.log('adding to db')
-              log = log + 'adding to db' + '\n'
-              // console.log(school)
-          
-              // remove any duplicate keys
-              const schoolKeys = Object.keys(school)
-              const uniqueSchoolKeys = [...new Set(schoolKeys)]
-              const uniqueSchool = {}
-              uniqueSchoolKeys.forEach(key => {
-                uniqueSchool[key] = school[key]
-              })
-              await fetch(schoolApIBase, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(uniqueSchool)
-              })
-              // await db.insert(schools).values(uniqueSchool)
-              console.log('done')
-              log = log + 'done' + '\n'
-              // console.log('hello --> ', school)
+          console.log('adding to db')
+          log = log + 'adding to db' + '\n'
+          // console.log(school)
+      
+          // remove any duplicate keys
+          const schoolKeys = Object.keys(school)
+          const uniqueSchoolKeys = [...new Set(schoolKeys)]
+          const uniqueSchool = {}
+          uniqueSchoolKeys.forEach(key => {
+            uniqueSchool[key] = school[key]
+          })
+          await fetch(schoolApIBase, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(uniqueSchool)
+          })
+          // await db.insert(schools).values(uniqueSchool)
+          console.log('done')
+          log = log + 'done' + '\n'
+          // console.log('hello --> ', school)
         } else {
           console.log('Could not find the details...')
           log = log + 'Affiliation Id: ' + affilatedSchool.id + '\n'
