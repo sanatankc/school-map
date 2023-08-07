@@ -76,3 +76,54 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* .logo-animation {
+  filter: grayscale(1);
+} */
+
+.logo-animation div {
+  animation: divAnimation 1s infinite alternate;
+  transform-origin: center;
+  transform: translateY(-20px);
+  /* transform: translateY(-50px); */
+}
+
+.logo-animation div:nth-of-type(1) {
+  animation-delay: 0s;
+}
+
+.logo-animation div:nth-of-type(2) {
+  animation-delay: 0.2s;
+}
+
+.logo-animation div:nth-of-type(3) {
+  animation-delay: 0.4s;
+}
+
+.bg-animation {
+  background: linear-gradient(45deg,
+  rgba(152, 145, 248, 0.3), 
+  rgba(218, 247, 187, 0.3),
+  rgba(152, 145, 248, 0.3), 
+  rgba(218, 247, 187, 0.3),
+  rgba(152, 145, 248, 0.3), 
+  rgba(218, 247, 187, 0.3)
+  );
+  background-size: 600% 100%;
+  animation: gradient 16s linear infinite;
+  animation-direction: alternate;
+}
+
+@keyframes gradient {
+  0% {background-position: 0%}
+  100% {background-position: 100%}
+}
+
+@keyframes divAnimation {
+  0% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(20px);
+  }
+}

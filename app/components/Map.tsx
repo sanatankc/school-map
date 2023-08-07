@@ -1,8 +1,8 @@
 // @ts-nocheck
 'use client';
 
-import React, { Component, use } from 'react';
-import { GoogleMap, InfoWindow, LoadScript, Marker, Circle } from '@react-google-maps/api';
+import React, { Component, useRef } from 'react';
+import { GoogleMap, InfoWindow, LoadScript, Marker, Circle, Autocomplete } from '@react-google-maps/api';
 import { markerColor } from '../schools';
 
 const containerStyle = {
@@ -53,6 +53,8 @@ const Map: React.FC<{ selected: number, schools, setSelected: (selected: number)
   const [hovered, setHovered] = React.useState<number>(-1);
   const [zoom, setZoom] = React.useState<number>(10.3);
   const [center, setCenter] = React.useState<{lat: number, lng: number}>(bangloreCenter);
+  const autocompleteRef = useRef(null);
+  
 
   const radius = radiusKm * 1000;
   React.useEffect(() => {
@@ -69,12 +71,34 @@ const Map: React.FC<{ selected: number, schools, setSelected: (selected: number)
       setZoom(10.3)
       setCenter(bangloreCenter)
     }
+    
+    // if (window.google && window.google.maps) {
+    //   var input = document.getElementById('searchTextField');
+    //   var autocomplete = new window.google.maps.places.Autocomplete(input);
+    //   window.google.maps.event.addListener(autocomplete, 'place_changed', function () {
+    //       var place = autocomplete.getPlace();
+    //       document.getElementById('city2').value = place.name;
+    //       document.getElementById('cityLat').value = place.geometry.location.lat();
+    //       document.getElementById('cityLng').value = place.geometry.location.lng();
+    //   });
+    // }
   }, [selected, radius])
+  
+
+  const onLoad = (autocomplete) => {
+    console.log('autocomplete: ', autocomplete);
+    autocompleteRef.current = autocomplete;
+  };
+
+  const onPlaceChanged = () => {
+    if (autocompleteRef.current !== null) {
+      console.log(autocompleteRef.current.getPlace());
+    } else {
+      console.log('Autocomplete is not loaded yet!');
+    }
+  };
 
   return (
-    <LoadScript
-      googleMapsApiKey="AIzaSyAIyVF44QhoXfwwKHLd1h3N49cQTHS0Yvw"
-    >
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
@@ -129,7 +153,6 @@ const Map: React.FC<{ selected: number, schools, setSelected: (selected: number)
             )
           })}
       </GoogleMap>
-    </LoadScript>
   )
 }
 
