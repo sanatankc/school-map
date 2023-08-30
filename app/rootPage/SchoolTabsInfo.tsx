@@ -5,7 +5,7 @@ import CompetitorAnalysis from './TabsContent/CompetitorAnalysis'
 
 const SchoolTabsInfo = () => {
   return (
-    <Tabs defaultValue="competitorAnalysis">
+    <Tabs defaultValue="marketOverview">
       <TabsList className='w-full bg-slate-50 justify-between'>
         <TabsTrigger className='text-slate-600 data-[state=active]:text-[#7376B8]' value="marketOverview">Market Overview</TabsTrigger>
         <TabsTrigger className='text-slate-600 data-[state=active]:text-[#7376B8]' value="competitorAnalysis">Competitor Analysis</TabsTrigger>
