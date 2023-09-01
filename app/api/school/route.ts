@@ -6,7 +6,10 @@ import { eq } from "drizzle-orm";
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const affiliationCode: string = searchParams.get('affiliationCode');
-  const res = await db.select().from(schools).where(eq(schools.affiliationCode, parseInt(affiliationCode)))
+  console.log('Fe')
+  const res = await db.select().from(schools)
+  console.log('done...')
+  fs.writeFileSync('test.json', JSON.stringify(res))
 
   return NextResponse.json(res)
 }

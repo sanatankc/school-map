@@ -1,32 +1,71 @@
-// @ts-nocheck
 'use client';
 
-import SchoolMap from "./components/Map";
-import React from 'react'
-import SearchBox from './components/SearchBox'
+import React from 'react';
+import { LoadScript } from '@react-google-maps/api';
+import Map from './components/Map';
+import useDotStore from './store';
+import Header from './rootPage/Header';
+import CurrentSchoolInfo from './rootPage/CurrentSchoolInfo';
+import SchoolTable from './rootPage/SchoolTable';
+import SchoolTabsInfo from './rootPage/SchoolTabsInfo';
+import Loader from './Loader';
 
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-import schools, { markerColor } from './schools';
-import Toolbar from './components/Toolbar';
+const App = () => {
+  const schools = useDotStore((state) => state.schools)
+  const radius = useDotStore((state) => state.radius)
+  const fetchingSchools = useDotStore((state) => state.fetchingSchools)
 
-
-export default function Home() {
-  const [selected, setSelected] = React.useState<number>(-1);
-  const [radius, setRadius] = React.useState<number>(6);
+  const hasSchools = schools && schools.length > 0 && !fetchingSchools
 
   return (
-    <div className='flex flex-col w-screen h-screen'>
-      <SearchBox 
-        setSelectedSchool={setSelected}
-        schools={schools}
-      />
-      <div className='flex flex-row w-screen overflow-hidden flex-1'>
-        <Toolbar selected={selected} radius={radius} setRadius={setRadius} />
-        <SchoolMap selected={selected} setSelected={setSelected} radius={radius} />
-      </div>
+    <LoadScript
+      googleMapsApiKey="AIzaSyAIyVF44QhoXfwwKHLd1h3N49cQTHS0Yvw"
+      libraries={[
+        'drawing',
+        'geometry',
+        'places'
+      ]}
+      loadingElement={
+        <div className='w-full h-screen'>
+          <Loader />
+        </div>
+      }
+    >
+    <div className='px-10'>
+      <Header />
     </div>
+    {fetchingSchools && (
+      <div className='w-full h-screen'>
+        <Loader />
+      </div>
+    )}
+    <div className='px-10 flex flex-col min-h-screen pb-10'>
+      <CurrentSchoolInfo />
+
+      {hasSchools && (
+        <>
+          <div className='w-full flex mt-4 gap-4'>
+            <div className='flex-1'>
+              <SchoolTabsInfo />
+            </div>
+            <div className='flex-1 w-full min-w-max bg-slate-50 p-2 rounded-md h-[611px]'>
+              <Map
+                schools={schools.map(school => ({
+                  id: school.affiliationCode,
+                  ...school,
+                }))}
+                selected={schools.find((school) => school.isSearchedSchool).affiliationCode}
+                setSelected={() => {}}
+                radius={radius}
+              />
+            </div>
+          </div>
+          <SchoolTable />
+        </>
+      )}
+    </div>
+  </LoadScript>
   )
 }
+export default App
+

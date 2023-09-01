@@ -1,13 +1,16 @@
 // @ts-nocheck
 'use client';
 
-import React, { Component, use } from 'react';
-import { GoogleMap, InfoWindow, LoadScript, Marker, Circle } from '@react-google-maps/api';
-import schools, { markerColor } from '../schools';
+import React, { Component, useRef } from 'react';
+import { GoogleMap, InfoWindow, LoadScript, Marker, Circle, Autocomplete } from '@react-google-maps/api';
+import { markerColor } from '../schools';
 
 const containerStyle = {
   flex: 1,
-  widrh: '100%',
+  width: '100%',
+  height: '100%',
+  borderRadius: '4px',
+  
 };
 
 const bangloreCenter = {lat: 12.987246534773332, lng:  77.59929160799365}
@@ -43,13 +46,15 @@ const icons = Object.keys(markerColor).map((category) => ({
 
 const getZoomLevel = (radius) =>  {
   const scale = (radius + (radius / 2)) / 500;
-  const zoom = (17.3 - Math.log(scale) / Math.log(2));
+  const zoom = (16.9 - Math.log(scale) / Math.log(2));
   return zoom;
 }
-const Map: React.FC<{ selected: number, setSelected: (selected: number) => void, radius: number }>  = ({selected, setSelected, radius: radiusKm }) => {
+const Map: React.FC<{ selected: number, schools, setSelected: (selected: number) => void, radius: number }>  = ({selected, setSelected, schools, radius: radiusKm }) => {
   const [hovered, setHovered] = React.useState<number>(-1);
   const [zoom, setZoom] = React.useState<number>(10.3);
   const [center, setCenter] = React.useState<{lat: number, lng: number}>(bangloreCenter);
+  const autocompleteRef = useRef(null);
+  
 
   const radius = radiusKm * 1000;
   React.useEffect(() => {
@@ -66,12 +71,34 @@ const Map: React.FC<{ selected: number, setSelected: (selected: number) => void,
       setZoom(10.3)
       setCenter(bangloreCenter)
     }
+    
+    // if (window.google && window.google.maps) {
+    //   var input = document.getElementById('searchTextField');
+    //   var autocomplete = new window.google.maps.places.Autocomplete(input);
+    //   window.google.maps.event.addListener(autocomplete, 'place_changed', function () {
+    //       var place = autocomplete.getPlace();
+    //       document.getElementById('city2').value = place.name;
+    //       document.getElementById('cityLat').value = place.geometry.location.lat();
+    //       document.getElementById('cityLng').value = place.geometry.location.lng();
+    //   });
+    // }
   }, [selected, radius])
+  
+
+  const onLoad = (autocomplete) => {
+    console.log('autocomplete: ', autocomplete);
+    autocompleteRef.current = autocomplete;
+  };
+
+  const onPlaceChanged = () => {
+    if (autocompleteRef.current !== null) {
+      console.log(autocompleteRef.current.getPlace());
+    } else {
+      console.log('Autocomplete is not loaded yet!');
+    }
+  };
 
   return (
-    <LoadScript
-      googleMapsApiKey="AIzaSyAIyVF44QhoXfwwKHLd1h3N49cQTHS0Yvw"
-    >
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
@@ -97,7 +124,9 @@ const Map: React.FC<{ selected: number, setSelected: (selected: number) => void,
                   }}
                 >
                   {(school.id === selected || school.id === hovered) && (
-                    <InfoWindow>
+                    <InfoWindow 
+                      position={{ lat: school.lat, lng: school.long }}
+                    >
                       <div>{school.name}</div>
                     </InfoWindow>
                   )}
@@ -124,7 +153,6 @@ const Map: React.FC<{ selected: number, setSelected: (selected: number) => void,
             )
           })}
       </GoogleMap>
-    </LoadScript>
   )
 }
 
