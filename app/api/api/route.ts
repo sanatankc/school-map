@@ -8,7 +8,7 @@ import * as cheerio from 'cheerio';
 import fetch from 'node-fetch'
 import { NextResponse, } from 'next/server'
 import scrapePath from './scrapePath'
-import schoolsAlreadyInDb from './schoolsAlreadyInDb'
+import schoolsAlreadyInDb from './schoolsAlreadyInDB'
 import affiliationIds from './affiliationIds'
 import { db, schools } from './migrate'
 

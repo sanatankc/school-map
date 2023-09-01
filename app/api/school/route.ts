@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { NextResponse } from 'next/server'
-import { db, schools } from '../backend/api/migrate'
+import { db, schools } from '../api/migrate'
 import { eq } from "drizzle-orm";
 
 export async function GET(req: Request) {
