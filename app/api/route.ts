@@ -14,9 +14,19 @@ import userAgents from './userAgents'
 
 const csvFilePath = path.resolve(process.cwd(), 'app', 'api', 'schoolData.csv');
 
-const getLatLong = async (schoolName, state, district, address) => {
+const getCSVHeaders = (filePath) => {
+  if (fs.existsSync(filePath) && fs.statSync(filePath).size > 0) {
+    const firstLine = fs.readFileSync(filePath, { encoding: 'utf8' }).split('\n')[0];
+    return firstLine.split(',');
+  }
+  return [];
+}
+let headers = getCSVHeaders(csvFilePath);
+
+
+const getLatLong = async (schoolName, state, district) => {
   const searchTerm = schoolName + ' ' + state + ' ' + district
-  console.log('searching...', searchTerm)
+  console.log('getting lat long...', searchTerm)
   let url = 'https://www.edustoke.com/common/server/apis/getPlacesSuggestion.php?input=' + encodeURI(searchTerm)
   let res = await fetch(url, {
     headers: {
@@ -30,6 +40,10 @@ const getLatLong = async (schoolName, state, district, address) => {
     const pladJson = await plad.json()
     const lat = pladJson.geometry.location.lat
     const long = pladJson.geometry.location.lng
+    console.log('Got Lat Long', {
+      lat,
+      long
+    })
     return {
       lat,
       long
@@ -104,12 +118,18 @@ const loadDataFromCSV = () => {
 }
 
 const appendDataToCSV = (data) => {
+  
+  // If there are no headers, assume this is the first write and use keys from data
+  if (headers.length === 0) {
+    headers = Object.keys(data);
+  }
+
   // Check if file exists and has content; if not, write headers
   if (!fs.existsSync(csvFilePath) || fs.statSync(csvFilePath).size === 0) {
-    const csvHeader = stringify([data], { header: true });
+    const csvHeader = stringify([data], { header: true, columns: headers });
     fs.writeFileSync(csvFilePath, csvHeader);
   } else {
-    const csvData = stringify([data], { header: false });
+    const csvData = stringify([data], { header: false, columns: headers });
     fs.appendFileSync(csvFilePath, csvData);
   }
 }
@@ -147,22 +167,22 @@ export async function GET() {
         }
 
         if (school.name) {
-          const { lat, long } = await getLatLong(school.name, school.state, school.district, school.address);
+          const { lat, long } = await getLatLong(school.name, affilatedSchool.state, affilatedSchool.district);
           school.lat = lat;
           school.long = long;
           school.affiliationCode = parseInt(affilatedSchool.id);
           school.state = affilatedSchool.state;
           school.district = affilatedSchool.district;
           school.board = 'CBSE';
-
+          // console.log('Json stringiofy log -> ', JSON.stringify(school, null, 2))
           appendDataToCSV(school);
           console.log('Added to CSV');
         } else {
           console.log('Could not find the details...');
         }
         i++;
-        console.log('Pausing for 2 seconds...');
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        console.log('Pausing for 1 seconds...');
+        await new Promise(resolve => setTimeout(resolve, 1000));
       } else {
         console.log('Already in CSV');
         console.log('Skipping...');
@@ -174,7 +194,7 @@ export async function GET() {
       console.log('Time taken --> ', msToTime(currentTimeTaken));
       console.log('Estimated time remaining --> ', msToTime((timeTaken / i) * (affiliationIds.length - i)));
 
-      if (i % 500 === 0) {
+      if (i % 500 === 0 && i !== 0) {
         console.log('Pausing for 5 minutes...');
         await new Promise(resolve => setTimeout(resolve, 300000));
       }
