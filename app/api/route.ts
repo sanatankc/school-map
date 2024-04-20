@@ -141,6 +141,11 @@ export async function GET() {
   let schoolData = loadDataFromCSV();
   console.log(schoolData.length);
 
+  let idsToScrape =  affiliationIds.reverse()
+  let cursorId = 2132405
+  let curorIndex = idsToScrape.findIndex((id) => id.id === cursorId)
+  idsToScrape = idsToScrape.slice(curorIndex)
+
   for (const affilatedSchool of affiliationIds.reverse()) {
     try {
       let currentStartTime = new Date().getTime()
