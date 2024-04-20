@@ -146,7 +146,7 @@ export async function GET() {
   let curorIndex = idsToScrape.findIndex((id) => id.id === cursorId)
   idsToScrape = idsToScrape.slice(curorIndex)
 
-  for (const affilatedSchool of affiliationIds.reverse()) {
+  for (const affilatedSchool of affiliationIds) {
     try {
       let currentStartTime = new Date().getTime()
       console.log('searching in CSV...', {
