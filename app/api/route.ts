@@ -141,12 +141,12 @@ export async function GET() {
   let schoolData = loadDataFromCSV();
   console.log(schoolData.length);
 
-  let idsToScrape =  affiliationIds.reverse()
+  affiliationIds = affiliationIds.reverse()
   let cursorId = 2130201
-  let curorIndex = idsToScrape.findIndex((id) => id.id === cursorId)
-  idsToScrape = idsToScrape.slice(curorIndex)
+  let curorIndex = affiliationIds.findIndex((id) => id.id === cursorId)
+  affiliationIds = affiliationIds.slice(curorIndex)
 
-  for (const affilatedSchool of idsToScrape) {
+  for (const affilatedSchool of affiliationIds) {
     try {
       let currentStartTime = new Date().getTime()
       console.log('searching in CSV...', {
