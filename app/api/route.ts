@@ -143,7 +143,7 @@ export async function GET() {
 
   affiliationIds = affiliationIds.reverse()
   let cursorId = 2130201
-  let curorIndex = affiliationIds.findIndex((id) => id.id === cursorId)
+  let curorIndex = affiliationIds.findIndex((data) => Number(data.id) === cursorId)
   affiliationIds = affiliationIds.slice(curorIndex)
 
   for (const affilatedSchool of affiliationIds) {
