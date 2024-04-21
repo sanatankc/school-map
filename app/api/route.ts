@@ -143,6 +143,7 @@ export async function GET() {
 
   let idsToScrape  = affiliationIds.reverse()
   let cursorId = Number(schoolData[schoolData.length - 1].affiliationCode)
+  console.log('Resuming from --> ', cursorId, schoolData[schoolData.length - 1].name)
   let curorIndex = affiliationIds.findIndex((data) => Number(data.id) === cursorId)
   idsToScrape = affiliationIds.slice(curorIndex)
 
