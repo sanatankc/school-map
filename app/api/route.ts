@@ -139,10 +139,10 @@ export async function GET() {
   let i = 0;
   let log = '';
   let schoolData = loadDataFromCSV();
-  console.log(schoolData.length);
+  
 
   let idsToScrape  = affiliationIds.reverse()
-  let cursorId = 2130201
+  let cursorId = Number(schoolData[schoolData.length - 1].affiliationCode)
   let curorIndex = affiliationIds.findIndex((data) => Number(data.id) === cursorId)
   idsToScrape = affiliationIds.slice(curorIndex)
 
@@ -199,10 +199,10 @@ export async function GET() {
       console.log('Time taken --> ', msToTime(currentTimeTaken));
       console.log('Estimated time remaining --> ', msToTime((timeTaken / i) * (affiliationIds.length - i)));
 
-      if (i % 500 === 0 && i !== 0) {
-        console.log('Pausing for 5 minutes...');
-        await new Promise(resolve => setTimeout(resolve, 300000));
-      }
+      // if (i % 500 === 0 && i !== 0) {
+      //   console.log('Pausing for 5 minutes...');
+      //   await new Promise(resolve => setTimeout(resolve, 300000));
+      // }
       console.log('-----------------------------------');
     } catch (e) {
       console.log('Error --> ', e);
